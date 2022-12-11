@@ -68,8 +68,18 @@ function ensureDirectory(dir) {
     });
 }
 (async () => {
-    let files = await readDeep(path_1.default.join('..', 'categorize', 'public', 'images'));
+    let the_path = path_1.default.join('..', 'categorize', 'public', 'images');
+    the_path = path_1.default.resolve(the_path);
+    let files = await readDeep(the_path);
     files = files.filter(x => x.endsWith('.png'));
     console.log(`files: ${files.length}`);
+    console.log(`files: ${files[0]}`);
+    console.log(the_path);
+    let imageSources = `
+    export default function ImageSources(){ 
+        return ${JSON.stringify(files.map(x => '/' + x.substring(the_path.length - 'images'.length).split('\\').join('/')), null, 4)};
+    }
+    `;
+    fs_1.default.writeFileSync(path_1.default.join('..', 'categorize', 'src', 'image_sources.ts'), imageSources);
 })();
 //# sourceMappingURL=index.js.map
